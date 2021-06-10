@@ -26,7 +26,7 @@ class Payment:
             # Base order on date and name
             return self.date < other.date
     
-    def full_details(self):
+    def __str__(self):
         """Returns a String representing the current state"""
         details = f"{self.account.name}\t{self.payment_type}\t{self.date.date()}\t{self.name}\t{self.value}"
         return details
@@ -63,9 +63,9 @@ class Ongoing_Payment(Payment):
             print(f"{self.full_details()}")
             print(f"got {self.period}")
     
-    def full_details(self):
+    def __str__(self):
         """Returns a String representing the current state"""
         
-        details = super().full_details()
+        details = str(super)
         details = f"{details}\t{self.period}"
         return details
