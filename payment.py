@@ -35,37 +35,35 @@ class Payment:
 class Ongoing_Payment(Payment):
     """A class representing a payment with no end date"""
 
-    def __init__(self, account, payment_type, date, name, value, period):
+    def __init__(self, account, payment_type, date, name, value, frequency):
         """Initialize parent and then own attributes"""
         super().__init__(account, payment_type, date, name, value)
-        self.period = period # DAILY, WEEKLY, FORTNIGHTLY, 
+        self.frequency = frequency # DAILY, WEEKLY, FORTNIGHTLY, 
         # FOURWEEKLY, MONTHLY, QUATERLY, HALFYEARLY, YEARLY
     
     def next_date(self):
-        """Moves date forward by slef.frequency * self.period"""
+        """Moves date forward by slef.frequency * self.frequency"""
         
-        if self.period == 'DAILY':
+        if self.frequency == 'DAILY':
             self.date = self.date + timedelta(days=1)
-        elif self.period == 'WEEKLY':
+        elif self.frequency == 'WEEKLY':
             self.date = self.date + timedelta(weeks=1)
-        elif self.period == 'FORTNIGHTLY':
+        elif self.frequency == 'FORTNIGHTLY':
             self.date = self.date + timedelta(weeks=2)
-        elif self.period == 'FOURWEEKLY':
+        elif self.frequency == 'FOURWEEKLY':
             self.date = self.date + timedelta(weeks=+4)
-        elif self.period == 'MONTHLY':
+        elif self.frequency == 'MONTHLY':
             self.date = add_months.add_months(self.date, 1)
-        elif self.period == 'QUARTERLY':
+        elif self.frequency == 'QUARTERLY':
             self.date = add_months.add_months(self.date, 3)
-        elif self.period == 'YEARLY':
+        elif self.frequency == 'YEARLY':
             self.date = add_months.add_months(self.date, 12)
         else:
             print("***** MISSED *****")
             print(f"{self.full_details()}")
-            print(f"got {self.period}")
+            print(f"got {self.frequency}")
     
     def __str__(self):
         """Returns a String representing the current state"""
         
-        details = str(super)
-        details = f"{details}\t{self.period}"
-        return details
+        return f"{super().__str__()}\t{self.frequency}"
