@@ -37,7 +37,7 @@ def get_data(file_path):
 
 def write_list_to_file(file_path, contents):
     """Writes given contents to the given file"""
-    with open(file_path) as f:
+    with open(file_path, 'w') as f:
         for line in contents:
             # Write the string reprresentation to given file
             f.write(f"{str(line)}\n")
@@ -107,9 +107,9 @@ def create_payment(input_data):
         # Check lenght of input_data, to see what type of payment to create
         if len(data) == 5:
             # Create one time payment
-            payments.append(Payment(data[0], data[1], data[2], data[3], data[4]))
+            return Payment(data[0], data[1], data[2], data[3], data[4])
         elif len(data) == 6:
-            payments.append(Ongoing_Payment(data[0], data[1], data[2], data[3], data[4], data[5]))
+            return Ongoing_Payment(data[0], data[1], data[2], data[3], data[4], data[5])
     else:
         # If anything went wrong with validation raise error
         raise ValueError(f"Was unable to validate payment {input_data}")
