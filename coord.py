@@ -1,5 +1,6 @@
 """A class to allow communication between the GUI and the core system"""
 
+from typing import Container
 from account import Account
 from payment import *
 import data_handler
@@ -29,10 +30,18 @@ class Coord:
         return self.accounts
 
 
-    def delete_account(self, acc):
+    def delete_account(self, index):
         """Deletes account from list and saves new list"""
+        acc = self.accounts[index]
         self.accounts.remove(acc)
         data_handler.save_accounts(self.accounts)
+
+        if acc in self.accounts:
+            # delete failed, return False
+            return False
+        else:
+            return True
+
 
     # Payment Related
     def create_payment(self, data):
