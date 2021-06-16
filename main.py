@@ -1,9 +1,11 @@
 from datetime import datetime as dt
+from io import DEFAULT_BUFFER_SIZE
 import re
 
 from account import Account
 from payment import *
 from coord import Coord
+import data_handler
 
 
 def print_list(items):
@@ -13,6 +15,63 @@ def print_list(items):
     for item in items:
         print(f"{index}\t{str(item)}")
         index += 1
+
+
+# Account Menu Optoins
+def create_account():
+    """Menu optoin for create account"""
+    name = input("\n\n Okay, what would you like to call this"
+            "new account? ")
+    
+    if coord.create_account(name):
+        print("\nYour account {name} has been created")
+    else:
+        print("There was a problem creating this account")
+
+
+def delete_account():
+    """Menu option for delete account"""
+    
+    # Get a list of accounts, and output them to console
+    accounts = coord.get_accounts()
+    
+    # check that list is not empty
+    if accounts:
+        print_list(accounts)
+
+        # Ask user for index of account to remove
+        selection = input("Which account number would you like to remove? ")
+
+        # Convert selection to an int
+        selection = data_handler.valid_int(selection)
+
+        # Check selectoin doesn't equal None
+        if selection:
+            if selection >= 0 and selection <= len(accounts) - 1:
+                acc = accounts[selection]
+                    
+                # Warn user about deleting account
+                delete = input(f"You have chosen to delete {acc.name} are you sure you "
+                            "want to do this?\nDeleting an account that is connected to a payment"
+                            " can cause errors (Y or N): ")
+
+                if delete.lower() == 'y':
+                    successful = coord.delete_account(acc)
+                        
+                    if successful:
+                        print(f"Your account {str(acc)} has been deleted")
+                    else:
+                        print("Was unable to dlete account")
+                else:
+                        # If user chooses not to delete account
+                        print("\nYour account has not been removed")
+            else:
+                print("Not a valid option")
+    
+    else:
+        print("You don't have any accounts yet")
+    
+    return
 
 
 def create_payment():
@@ -56,9 +115,6 @@ def get_output():
 coord = Coord()
 
 while True:
-    
-    # UPDATE REQUIRED 
-    # Add sub optoins for account and payment
     selection = input(
         "\n\nWelcome!"
         "\nThis app will help you rememeber when your payments are due!"
@@ -69,50 +125,20 @@ while True:
         "\n 4) Exit\n\n")
         
     if selection == '1':
-        # Create/Delete a new account
+        # Create/Delete an account
 
         selection = input("\nWould you like to:"
-        "\n 1) Create an account"
-        "\n 2) Delete an existing Account"
+        "\n 1) Create a new account"
+        "\n 2) Delete an existing account"
         "\n 3) Return to the main menu: ")
 
         if selection == '1':
             # Create a new account
-            
-            name = input("\n\n Okay, what would you like to call this"
-            "new account? ")
-    
-            if coord.create_account(name):
-                print("\nYour account {name} has been added")
-            else:
-                print("There was a problem creating this account")
-            
+            create_account()
             continue
         elif selection == '2':
             # Delete an existing account
-            accounts = coord.get_accounts()
-            print_list(accounts)
-            
-            # Ask user for index of account to remove
-            selection = input("Which account number would you like to delete? ")
-
-            # Check input is within indexes
-            pattern = re.compile(r"^\d+$")
-
-            if pattern.match(selection):
-                # Convert slection to int
-                selection = int(selection)
-
-                if selection >= 0 and selection <= len(accounts) - 1:
-                    acc = accounts[selection]
-                    successful = coord.delete_account(acc)
-
-                    if successful:
-                        print(f"Your account {str(acc)} has been deleted")
-            
-            else:
-                print("Not a valid option")
-            
+            delete_account()
             continue
         else:
             # If selection = 3 or other value return to main menu
@@ -120,31 +146,12 @@ while True:
     elif selection == '2':
         # Create/Edit/Delete a payment
         
-        # IN PROGRESS
+        selection = input("\nWould you like to:"
+        "\n 1) Create a new payment"
+        "\n 2) Delete an existing payment"
+        "\n 3) Edit an existing payment"
+        "\n 4) Return to main menu")
 
-        break
-    elif selection == '3':
-        # Check payments due
-        
-        # Rewrite required 
-
-        start_date = input("Please enter first date: (YYYY-MM-DD) ")
-        end_date = input("Please enter first date: (YYYY-MM-DD) ")
-        
-        # Convert input into dates:
-        start_date = dt.strptime(start_date, '%Y-%m-%d')
-        end_date = dt.strptime(end_date, '%Y-%m-%d')
-        
-        # Get payments and output
-        bills_due(start_date, end_date)
-        output = get_output()
-        
-        # print and save output
-        for line in output:
-            print(line)
-        File_Manager.write_to_file(output, f'{start_date.date()}.txt', False)
-        
-    elif selection == '4':
-        # Exit
-        break
-
+        # In Progress
+        continue
+    

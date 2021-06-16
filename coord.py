@@ -11,7 +11,7 @@ class Coord:
         self.accounts = data_handler.get_accounts()
         self.payments = data_handler.get_payments()
 
-
+# Account Related
     def create_account(self, data):
         """Creates and saves new accounts to acc.txt"""
         acc = data_handler.create_account(data)
@@ -34,7 +34,7 @@ class Coord:
         self.accounts.remove(acc)
         data_handler.save_accounts(self.accounts)
 
-
+# Payment Related
     def create_payment(self, data):
         """Creates and saves the payment with the given information"""
         pay = data_handler.create_payment(data)

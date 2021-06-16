@@ -226,3 +226,16 @@ def valid_frequency(input):
         return input
     else:
         return None
+
+
+def valid_int(input):
+    """Checks if input is an int.  Returns int if valid, None otherwise"""
+    # Check input is within indexes
+    pattern = re.compile(r"^\d+$")
+
+    if pattern.match(input):
+        # Return int
+        return int(input)
+    
+    # If not valid, return None
+    return None
