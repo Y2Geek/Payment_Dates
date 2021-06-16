@@ -94,7 +94,7 @@ def get_payments():
     # if data, create payments
     if data:
         for pay in data:
-            create_payment(pay)
+            payments.append(create_payment(pay))
 
     return payments
 
