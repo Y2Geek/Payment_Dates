@@ -7,6 +7,11 @@ class Account:
         self.payments = [] # Payment objects to be added during execution
     
 
+    def get_payments(self):
+        """Returns a list of payments"""
+        return sorted(self.payments)
+
+
     def add_payment(self, payment):
         """Add given payment to payments list"""
         self.payments.append(payment)

@@ -40,7 +40,8 @@ class Ongoing_Payment(Payment):
         super().__init__(account, payment_type, date, name, value)
         self.frequency = frequency # DAILY, WEEKLY, FORTNIGHTLY, 
         # FOURWEEKLY, MONTHLY, QUATERLY, HALFYEARLY, YEARLY
-    
+
+
     def next_date(self):
         """Moves date forward by slef.frequency * self.frequency"""
         

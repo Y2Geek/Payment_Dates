@@ -1,4 +1,6 @@
 from datetime import datetime as dt
+import copy
+from datetime import datetime
 
 from account import Account
 from payment import *
@@ -25,6 +27,16 @@ def print_list(list):
         # Print index with item string
         print(f"{index}\t{str(item)}")
         index += 1
+
+
+def get_date(date_type):
+    """Asks the user to enter a date, repeats until valid date given"""
+    date = None
+    while not date:
+        input_date = input(f"Please enter a {date_type} in the form YYYY-MM-DD: ")
+        if data_handler.valid_date(input_date):
+            date = datetime.strptime(input_date, '%Y-%m-%d')
+            return date
 
 
 # Account Menu Options
@@ -75,6 +87,44 @@ def print_accounts():
     accounts = coord.get_accounts()
     print_list(accounts)
 
+
+# Payment Menu Options
+
+
+
+# Upcoming Payment Check Menu Option
+
+
+
+def print_account_payments(startdate):
+    """Prints output of relevant payments"""
+
+    output = coord.get_output(startdate)
+    if len(output) > 0:
+        for line in output:
+            print(line)
+
+    
+def upcoming_payments():
+    """Asks the user for two dates, and returns a list of payments in those dates"""
+    
+    # Make sure there are known payments
+    if number_of_payments() > 0:
+        startdate = get_date('start date')
+        
+        # Make usre end date is after start date
+        enddate = datetime.min
+        if enddate <= startdate:
+            enddate = get_date('end_date')
+
+        # Find relevant payments
+        payments = coord.get_payments_between(startdate, enddate)
+
+        # split payments and display on screen
+        coord.split_account_payments(payments)
+        print_account_payments(startdate)
+
+
 # Global variable
 coord = Coord()
 
@@ -123,8 +173,9 @@ while True:
         # Payment Menu optoins
         print("\n> Payment Menu <\n\nPlease choose from one of the following options:")
         continue
-    elif option == 3:
-        # Go to Upcoming Payment Check method
+    elif option == '3':
+        # Upcoming payment check
+        upcoming_payments()
         continue
     elif option == '4':
         print("\nHave an amazing day\nExiting. . . ")
