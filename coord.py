@@ -191,7 +191,7 @@ class Coord:
                 amount_out += balances[1]
 
             # Clear account payments
-            acc.payments = []
+            acc.payments.clear()
 
         output.append(f"Total income: {round(amount_in, 2)}\n"
                     + f"Total Outgoings: {round(amount_out, 2)}\n"
