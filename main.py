@@ -47,6 +47,7 @@ def create_account():
     successful = coord.create_account(name)
 
     if successful:
+        coord.save_accounts()
         print(f"Your {name} account has been set up!\n")
     else:
         print(f"Was unable to set up account {name}, you may have an account\n"
@@ -93,8 +94,6 @@ def print_accounts():
 
 
 # Upcoming Payment Check Menu Option
-
-
 
 def print_account_payments(startdate):
     """Prints output of relevant payments"""

@@ -1,4 +1,5 @@
 """A class to allow communication between the GUI and the core system"""
+import os
 import copy
 
 from account import Account
@@ -9,20 +10,39 @@ class Coord:
     
     def __init__(self):
         """Set up required lists"""
-        self.accounts = data_handler.get_accounts()
-        self.payments = data_handler.get_payments()
+        self.accounts = []
+        self.payments = []
+        self._account_file = f"Config{os.sep}Acc.txt"
+        self._payment_file = f"Config{os.sep}AllPayments.txt"
+        self.get_data()
+
+
+    def get_data(self):
+        """Get data from config files, and put them in lists"""
+        self._get_accounts()
+        self._get_payments()
+        print(len(self.accounts), len(self.payments))
+
 
     # Account Related
     def create_account(self, data):
         """Creates and saves new accounts to acc.txt"""
-        acc = data_handler.create_account(data)
+        self.accounts.append(Account(data))
         
-        if acc:
-            self.accounts.append(acc)
-            data_handler.save_accounts(self.accounts)
-            
-            # Let the user know all was successful 
-            return True
+        # Let the user know all was successful 
+        return True
+
+
+    def _get_accounts(self):
+        """Creates a list of accounts based on data from Acc.txt"""
+    
+        # Get account data
+        data = data_handler.get_data(self._account_file)
+
+        # if data, create accounts
+        if data:
+            for acc in data:
+                self.create_account(acc)
 
 
     def get_accounts(self):
@@ -34,7 +54,7 @@ class Coord:
         """Deletes account from list and saves new list"""
         acc = self.accounts[index]
         self.accounts.remove(acc)
-        data_handler.save_accounts(self.accounts)
+        self.save_accounts()
 
         if acc in self.accounts:
             # delete failed, return False
@@ -43,23 +63,52 @@ class Coord:
             return True
 
 
+    def save_accounts(self):
+        """Saves account list of accounts, to Acc.txt"""
+        data_handler.write_list_to_file(self._account_file, self.accounts)
+
+
     # Payment Related
     def create_payment(self, data):
-        """Creates and saves the payment with the given information"""
-        pay = data_handler.create_payment(data)
-        # Add new payment to list
-        if pay:
-            self.payments.append(pay)
-            data_handler.save_payments(self.payments)
-            
-            # Let the user know all was successful 
-            return True
+        """Creates payment with the given information"""
+        
+        # Check data and convert where needed
+        data = data_handler.validate_data(data, self.accounts)
+
+        # Data will be None if any errors 
+        if data:
+            # Check lenght of input_data, to see what type of payment to create
+            if len(data) == 5:
+                # Create one time payment
+                self.payments.append(Payment(data[0], data[1], data[2], data[3], data[4]))
+            elif len(data) == 6:
+                self.payments.append(Ongoing_Payment(data[0], data[1], data[2], data[3], data[4], data[5]))
+        else:
+            # If anything went wrong with validation raise error
+            raise ValueError(f"Was unable to validate payment {data}")
+
+
+    def _get_payments(self):
+        """Creates a list of payments based on data from AllPayments.txt"""
+    
+        # Get payment data
+        data = data_handler.get_data(self._payment_file)
+
+        # if data, create payments
+        if data:
+            for pay in data:
+                self.create_payment(pay)
 
 
     def get_payments(self):
         """Returns a list of known payments"""
         return self.payments
     
+
+    def save_payments(self):
+        """Saves payment list to AllPayments.txt"""
+        data_handler.write_list_to_file(self._payment_file, self.payments)
+
 
     def update_payment_dates(self, startdate):
         """
@@ -127,18 +176,24 @@ class Coord:
 
             if len(payments) > 0:
                 # Print name of account, then payment details
-                output.append(f"\n{acc.name}\n")
+                output.append(f"{acc.name}\n")
 
                 # print short version of payment
                 for pay in payments:
                     output.append(f"{pay.date.date()}\t{pay.name}\t{pay.value}")
-                
+
+                # add extra blank line in output
+                output.append("\n")
+
                 # Get balances
                 balances = acc.get_balances()
                 amount_in += balances[0]
                 amount_out += balances[1]
-        
-        output.append(f"\n\nTotal income: {round(amount_in, 2)}\n"
+
+            # Clear account payments
+            acc.payments = []
+
+        output.append(f"Total income: {round(amount_in, 2)}\n"
                     + f"Total Outgoings: {round(amount_out, 2)}\n"
                     + f"Leaving: {round(amount_in - amount_out, 2)}")
 
