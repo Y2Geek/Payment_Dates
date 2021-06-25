@@ -50,9 +50,8 @@ class Coord:
         return self.accounts
 
 
-    def delete_account(self, index):
+    def delete_account(self, acc):
         """Deletes account from list and saves new list"""
-        acc = self.accounts[index]
         self.accounts.remove(acc)
         self.save_accounts()
 
