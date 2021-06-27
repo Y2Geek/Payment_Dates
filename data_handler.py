@@ -87,7 +87,7 @@ def valid_date(input):
 
 
 def valid_amount(input):
-    """Checks if valid amount entered, and returns float if true"""
+    """Checks if valid amount entered, and returns value in pennies (int) if true"""
     
     # Input must be only digits and decimal with a maximum
     # 2 decimal places.
@@ -95,7 +95,7 @@ def valid_amount(input):
 
     if format.match(input):
         # If input matches format, convert to decimal
-        return float(input)
+        return int(float(input) * 100)
     else:
         # If not a valid value, return None
         return None

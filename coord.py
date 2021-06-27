@@ -167,8 +167,8 @@ class Coord:
         """Returns a list to be displayed and saved"""
         
         output = []
-        amount_in = 0.0
-        amount_out = 0.0
+        amount_in = 0
+        amount_out = 0
 
         for acc in self.accounts:
             payments = acc.get_payments()
@@ -179,7 +179,7 @@ class Coord:
 
                 # print short version of payment
                 for pay in payments:
-                    output.append(f"{pay.date.date()}\t{pay.name}\t{pay.value}")
+                    output.append(f"{pay.date.date()}\t{pay.name}\t{pay.get_fvalue()}")
 
                 # add extra blank line in output
                 output.append("\n")
@@ -192,8 +192,12 @@ class Coord:
             # Clear account payments
             acc.payments.clear()
 
-        output.append(f"Total income: {round(amount_in, 2)}\n"
-                    + f"Total Outgoings: {round(amount_out, 2)}\n"
+        # Convert amount_in and amount_out in to floats
+        amount_in = float(amount_in / 100)
+        amount_out = float(amount_out / 100)
+
+        output.append(f"Total income: {amount_in}\n"
+                    + f"Total Outgoings: {amount_out}\n"
                     + f"Leaving: {round(amount_in - amount_out, 2)}")
 
         self.save_results(startdate, output)

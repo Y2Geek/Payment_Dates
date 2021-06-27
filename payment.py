@@ -14,7 +14,7 @@ class Payment:
         self.payment_type = payment_type # IN/OUT
         self.date = date # datetime object
         self.name = name
-        self.value = value
+        self.value = value # Int value
     
     def __lt__(self, other):
         """Compare attributes of this payment to other, for sorting"""
@@ -25,10 +25,16 @@ class Payment:
         else:
             # Base order on date and name
             return self.date < other.date
-    
+
+
+    def get_fvalue(self):
+        """Returns value as a float"""
+        return float(self.value / 100)
+
+
     def __str__(self):
         """Returns a String representing the current state"""
-        details = f"{self.account.name}\t{self.payment_type}\t{self.date.date()}\t{self.name}\t{self.value}"
+        details = f"{self.account.name}\t{self.payment_type}\t{self.date.date()}\t{self.name}\t{self.get_fvalue()}"
         return details
 
 
