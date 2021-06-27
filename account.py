@@ -24,8 +24,8 @@ class Account:
             # If payments is not empty, calcualte totals
 
             # Create holding variables for totals
-            total_in = 0.0
-            total_out = 0.0
+            total_in = 0
+            total_out = 0
             
             for payment in self.payments:
                 if payment.payment_type == 'IN':
